@@ -53,7 +53,7 @@ class oauth2api(object):
             param.update({'state':state})
         
        
-        query = urllib.urlencode(param)
+        query = urllib.parse.urlencode(param)
         return env_type.web_endpoint + '?' + query
     
 
