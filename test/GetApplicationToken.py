@@ -23,7 +23,7 @@ from oauthclient.credentialutil import credentialutil
 from oauthclient.model.model import environment
 import unittest
 
-app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/buy.item.feed"]
+app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope"]
 invalid_app_scopes = ["https://api.ebay.com/oauth/api_scope", "https://api.ebay.com/oauth/api_scope/sell.inventory"]
 
 class TestGetApplicationCredential(unittest.TestCase):
