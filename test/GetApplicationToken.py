@@ -36,7 +36,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         app_token = oauth2api_inst.get_application_token(environment.SANDBOX, invalid_app_scopes)
         self.assertIsNone(app_token.access_token)
         self.assertIsNotNone(app_token.error)
-        print '\n *** test_invalid_oauth_scope ***\n', app_token
+        print('\n *** test_invalid_oauth_scope ***\n', app_token)
     
 
     def test_client_credentials_grant_sandbox(self):
@@ -47,7 +47,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertIsNone(app_token.error)
         self.assertIsNotNone(app_token.access_token)
         self.assertTrue(len(app_token.access_token) > 0)
-        print '\n *** test_client_credentials_grant_sandbox ***:\n', app_token   
+        print('\n *** test_client_credentials_grant_sandbox ***:\n', app_token)
 
         
     def test_client_credentials_grant_production(self):
@@ -58,7 +58,7 @@ class TestGetApplicationCredential(unittest.TestCase):
         self.assertIsNone(app_token.error)
         self.assertIsNotNone(app_token.access_token)
         self.assertTrue(len(app_token.access_token) > 0)
-        print '\n *** test_client_credentials_grant_production ***:\n', app_token   
+        print('\n *** test_client_credentials_grant_production ***:\n', app_token)
 
 
 if __name__ == '__main__':
