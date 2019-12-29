@@ -19,8 +19,9 @@ limitations under the License.
 import base64
 
 def _generate_request_headers(credential):
-
-    b64_encoded_credential = base64.b64encode(credential.client_id + ':' + credential.client_secret)
+    
+    credential_string = f'{credential.client_id}:{credential.client_secret}'
+    b64_encoded_credential = base64.b64encode(credential_string.encode()).decode()
     headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': 'Basic ' + b64_encoded_credential
