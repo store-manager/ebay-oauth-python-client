@@ -17,7 +17,7 @@ limitations under the License.
 """
 import yaml, json
 import logging
-from model.model import environment, credentials
+from .model.model import environment, credentials
 
 user_config_ids = ["sandbox-user", "production-user"]
 
