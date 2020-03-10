@@ -16,6 +16,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
+import json
+from datetime import datetime
 
 class env_type(object):
     def __init__(self, config_id, web_endpoint, api_endpoint):
@@ -43,20 +45,54 @@ class oAuth_token(object):
             token_expiry: datetime in UTC
             refresh_token_expiry: datetime in UTC
         '''
-        self.access_token = access_token
-        self.token_expiry = token_expiry
-        self.refresh_token = refresh_token
-        self.refresh_token_expiry = refresh_token_expiry
-        self.error = error
-        
-        
-    def __str__(self):
-        token_str = '{' 
+        self.access_token = access_token if access_token else None
+        self.token_expiry = datetime.fromtimestamp(token_expiry) if token_expiry else None
+        self.refresh_token = refresh_token if refresh_token else None
+        self.refresh_token_expiry = datetime.fromtimestamp(refresh_token_expiry) if refresh_token_expiry else None
+        self.error = error if error else None
+
+    def to_dict(self, epoch=False):
+        d = {}
+
         if self.error != None:
-            token_str += '"error": "' + self.error + '"'
-        elif self.access_token != None:
-            token_str += '"access_token": "'  + self.access_token + '", "expires_in": "' + self.token_expiry.strftime('%Y-%m-%dT%H:%M:%S:%f') + '"'
-            if self.refresh_token != None:
-                token_str += ', "refresh_token": "' + self.refresh_token  + '", "refresh_token_expire_in": "' + self.refresh_token_expiry.strftime('%Y-%m-%dT%H:%M:%S:%f')+ '"'
-        token_str += '}'
-        return token_str
+            d["error"]: self.error
+
+        if self.access_token != None:
+            d["access_token"] = self.access_token
+            if epoch:
+                d["expires_in"] = self.token_expiry.timestamp()
+            else:
+                d["expires_in"] = self.token_expiry.strftime('%Y-%m-%dT%H:%M:%S:%f')
+ 
+        if self.refresh_token != None:
+            d["refresh_token"] = self.refresh_token
+            if epoch:
+                d["refresh_token_expire_in"] = self.refresh_token_expiry.timestamp()
+            else:
+                d["refresh_token_expire_in"] = self.refresh_token_expiry.strftime('%Y-%m-%dT%H:%M:%S:%f')
+        return d
+
+    @property
+    def access_token_expired(self):
+        return datetime.utcnow() > self.token_expiry
+
+    @property
+    def refresh_token_expired(self):
+        return datetime.utcnow() > self.refresh_token_expiry
+
+    @staticmethod
+    def load(path):
+        with open(path, 'r') as f:
+            tokens = json.load(f)
+            return oAuth_token(error=tokens.get('error'),
+                               access_token=tokens.get('access_token'),
+                               token_expiry=tokens.get('expires_in'),
+                               refresh_token=tokens.get('refresh_token'),
+                               refresh_token_expiry=tokens.get('refresh_token_expire_in'))
+
+    def save(self, path):
+        with open(path, 'w') as f:
+            json.dump(self.to_dict(True), f, indent=2)
+
+    def __str__(self):
+        return json.dumps(self.to_dict(), indent=2)
